@@ -3,6 +3,9 @@ extends Node
 
 
 signal data_loaded
+signal data_saved
+signal value_saved(key: String)
+
 
 var _data: Dictionary = {}
 var _save_file: String :
@@ -25,6 +28,7 @@ func save_value(key: String, value: Variant, immediate: bool = true) -> void:
 	_data[key] = value
 	if immediate:
 		_save_data()
+	value_saved.emit(key)
 
 
 func load_value(key: String, default: Variant = null) -> Variant:
@@ -39,6 +43,7 @@ func save_vec3(key: String, value: Vector3, immediate: bool = true) -> void:
 	]
 	if immediate:
 		_save_data()
+	value_saved.emit(key)
 
 
 func load_vec3(key: String, default: Vector3) -> Vector3:
@@ -57,6 +62,7 @@ func save_vec2(key: String, value: Vector2, immediate: bool = true) -> void:
 	]
 	if immediate:
 		_save_data()
+	value_saved.emit(key)
 
 
 func load_vec2(key: String, default: Vector2) -> Vector2:
