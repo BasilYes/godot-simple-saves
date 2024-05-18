@@ -7,6 +7,11 @@ signal data_saved
 signal value_saved(key: String)
 
 
+enum StorageType {
+	LOCAL_STORAGE = 0,
+}
+
+var _storage_type: StorageType = StorageType.LOCAL_STORAGE
 var _data: Dictionary = {}
 var _save_file: String :
 	set(value):
@@ -16,7 +21,11 @@ var _save_file: String :
 
 
 func _ready() -> void:
-	_save_file = "user://{}.save".format([ name ], "{}")
+	match _storage_type:
+		StorageType.LOCAL_STORAGE:
+			_save_file = "user://{}.save".format([ name ], "{}")
+		_:
+			return
 
 
 func _notification(what: int) -> void:
