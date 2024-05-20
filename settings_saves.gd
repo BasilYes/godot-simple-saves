@@ -26,6 +26,10 @@ func _ready():
 	super()
 
 
+func _select_storage_type() -> void:
+	_storage_type = StorageType.FILE
+
+
 func save_volume(bus_name: String, value: float) -> void:
 	var bus_id: int = AudioServer.get_bus_index(bus_name)
 	if bus_id == -1:
@@ -38,7 +42,7 @@ func save_volume(bus_name: String, value: float) -> void:
 
 
 func load_volume(bus_name: String) -> float:
-	return load_value(BUS_PREFIX + bus_name + VOLUME_POSTFIX, 1.0)
+	return await load_value(BUS_PREFIX + bus_name + VOLUME_POSTFIX, 1.0)
 
 
 func save_mute_volume(bus_name: String, mute: bool) -> void:
@@ -51,4 +55,4 @@ func save_mute_volume(bus_name: String, mute: bool) -> void:
 
 
 func load_mute_volume(bus_name: String) -> bool:
-	return load_value(BUS_PREFIX + bus_name + MUTE_POSTFIX, false)
+	return await load_value(BUS_PREFIX + bus_name + MUTE_POSTFIX, false)
