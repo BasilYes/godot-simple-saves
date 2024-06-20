@@ -46,6 +46,15 @@ func _notification(what: int) -> void:
 		_save_data()
 
 
+# TODO: remove corutines exept this
+func is_working() -> bool:
+	if not _is_loading:
+		return true
+	else:
+		await data_loaded
+		return true
+
+
 func _select_storage_type() -> void:
 	if has_node("/root/YandexSDK") and get_node("/root/YandexSDK").is_working():
 		if name.to_lower().contains("stats"):
