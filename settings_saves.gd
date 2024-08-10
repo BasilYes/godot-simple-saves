@@ -2,9 +2,10 @@ class_name SSSettingsSave
 extends SSSave
 
 
-const BUS_PREFIX = "bus_"
+const BUS_PREFIX = "$bus_"
 const VOLUME_POSTFIX = "_volume"
 const MUTE_POSTFIX = "_mute"
+const LANGUAGE_KEY = "$user_locale"
 
 
 func _ready():
@@ -22,6 +23,8 @@ func _ready():
 			if _data.has(bus_name):
 				mute = _data[bus_name]
 				AudioServer.set_bus_mute(i, mute and AudioServer.get_bus_volume_db(i) > -80.0)
+		if _data.has(LANGUAGE_KEY):
+			TranslationServer.set_locale(_data[LANGUAGE_KEY])
 	)
 	super()
 
@@ -56,3 +59,13 @@ func save_mute_volume(bus_name: String, mute: bool) -> void:
 
 func load_mute_volume(bus_name: String) -> bool:
 	return await load_value(BUS_PREFIX + bus_name + MUTE_POSTFIX, false)
+
+func save_locale(code: String) -> void:
+	if not code or code == TranslationServer.get_locale():
+		return
+	else:
+		_data[LANGUAGE_KEY] = code
+		TranslationServer.set_locale(code)
+
+func load_locale() -> String:
+		return await load_value(LANGUAGE_KEY, TranslationServer.get_locale())
