@@ -4,7 +4,7 @@ extends Node
 
 signal data_loaded
 signal data_saved
-signal value_saved(key: String)
+signal value_changed(key: String, value: Variant)
 
 
 enum StorageType {
@@ -69,7 +69,7 @@ func save_value(key: String, value: Variant, immediate: bool = true) -> void:
 	_data[key] = value
 	if immediate:
 		_save_data()
-	value_saved.emit(key)
+	value_changed.emit(key, value)
 
 
 ## Increment saved value, use with numbers (float/int) only
@@ -81,7 +81,7 @@ func increment_value(key: String, value: Variant, immediate: bool = true) -> Var
 		_:
 			if immediate:
 				_save_data()
-	value_saved.emit(key)
+	value_changed.emit(key, _data[key])
 	return _data[key]
 
 
@@ -100,7 +100,7 @@ func load_value(key: String, default: Variant = null) -> Variant:
 # 	]
 # 	if immediate:
 # 		_save_data()
-# 	value_saved.emit(key)
+# 	value_changed.emit(key)
 
 
 # func load_vec3(key: String, default: Vector3) -> Vector3:
@@ -119,7 +119,7 @@ func load_value(key: String, default: Variant = null) -> Variant:
 # 	]
 # 	if immediate:
 # 		_save_data()
-# 	value_saved.emit(key)
+# 	value_changed.emit(key)
 
 
 # func load_vec2(key: String, default: Vector2) -> Vector2:
