@@ -17,12 +17,12 @@ func _ready():
 			bus_name = BUS_PREFIX + AudioServer.get_bus_name(i) + VOLUME_POSTFIX
 			if _data.has(bus_name):
 				volume = _data[bus_name]
-				AudioServer.set_bus_volume_db(i, (volume - 1.0) * 80.0)
+				AudioServer.set_bus_volume_db(i, linear_to_db(volume))
 				AudioServer.set_bus_mute(i, not volume)
 			bus_name = BUS_PREFIX + AudioServer.get_bus_name(i) + MUTE_POSTFIX
 			if _data.has(bus_name):
 				mute = _data[bus_name]
-				AudioServer.set_bus_mute(i, mute and AudioServer.get_bus_volume_db(i) > -80.0)
+				AudioServer.set_bus_mute(i, mute and db_to_linear(AudioServer.get_bus_volume_db(i)))
 		if _data.has(LANGUAGE_KEY):
 			TranslationServer.set_locale(_data[LANGUAGE_KEY])
 	)
@@ -38,8 +38,7 @@ func save_volume(bus_name: String, value: float) -> void:
 	if bus_id == -1:
 		push_warning("No sound bus named " + bus_name, "\n", get_stack())
 		return
-	var volume: float = (value - 1.0) * 80.0
-	AudioServer.set_bus_volume_db(bus_id, volume)
+	AudioServer.set_bus_volume_db(bus_id, linear_to_db(value))
 	AudioServer.set_bus_mute(bus_id, not value)
 	save_value(BUS_PREFIX + bus_name + VOLUME_POSTFIX, value, true)
 
@@ -53,7 +52,7 @@ func save_mute_volume(bus_name: String, mute: bool) -> void:
 	if bus_id == -1:
 		push_warning("No sound bus named " + bus_name, "\n", get_stack())
 		return
-	AudioServer.set_bus_mute(bus_id, mute and AudioServer.get_bus_volume_db(bus_id) > -80.0)
+	AudioServer.set_bus_mute(bus_id, mute and db_to_linear(AudioServer.get_bus_volume_db(bus_id)))
 	save_value(BUS_PREFIX + bus_name + MUTE_POSTFIX, mute, true)
 
 
